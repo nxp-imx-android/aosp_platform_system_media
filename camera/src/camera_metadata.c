@@ -390,6 +390,14 @@ int validate_camera_metadata_structure(const camera_metadata_t *metadata,
         return ERROR;
     }
 
+    if (metadata->data_count > metadata->data_capacity) {
+        ALOGE("%s: Data count (%" PRIu32 ") should be <= data capacity "
+              "(%" PRIu32 ")",
+              __FUNCTION__, metadata->data_count, metadata->data_capacity);
+        android_errorWriteLog(SN_EVENT_LOG_ID, "30591838");
+        return ERROR;
+    }
+
     const metadata_uptrdiff_t entries_end =
         metadata->entries_start + metadata->entry_capacity;
     if (metadata->data_count > metadata->data_capacity) {
