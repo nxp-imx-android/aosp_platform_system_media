@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #define _GNU_SOURCE // for fdprintf
 #include <inttypes.h>
 #include <system/camera_metadata.h>
@@ -398,10 +397,9 @@ int validate_camera_metadata_structure(const camera_metadata_t *metadata,
         android_errorWriteLog(SN_EVENT_LOG_ID, "30591838");
         return ERROR;
     }
+
     const metadata_uptrdiff_t entries_end =
         metadata->entries_start + metadata->entry_capacity;
-
-
     if (entries_end < metadata->entries_start || // overflow check
         entries_end > metadata->data_start) {
 
