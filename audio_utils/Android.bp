@@ -14,17 +14,36 @@ cc_defaults {
 
 cc_library {
     name: "libaudioutils",
+    vendor_available: true,
+    vndk: {
+        enabled: true,
+    },
     host_supported: true,
     defaults: ["audio_utils_defaults"],
 
     srcs: [
         "channels.c",
-        "fifo.c",
+        "ErrorLog.cpp",
+        "fifo.cpp",
+        "fifo_index.cpp",
+        "fifo_writer32.cpp",
         "format.c",
         "limiter.c",
         "minifloat.c",
+        "power.cpp",
+        "PowerLog.cpp",
         "primitives.c",
         "roundup.c",
+    ],
+
+    header_libs: [
+        "libaudio_system_headers",
+        "libutils_headers",
+    ],
+
+    export_header_lib_headers: [
+        "libaudio_system_headers",
+        "libutils_headers",
     ],
 
     shared_libs: [
@@ -35,7 +54,7 @@ cc_library {
     target: {
         android: {
             srcs: [
-                "conversion.cpp",
+                "mono_blend.cpp",
                 "resampler.c",
                 "echo_reference.c",
             ],
@@ -52,6 +71,7 @@ cc_library {
 
 cc_library_static {
     name: "libaudioutils_fixedfft",
+    vendor_available: true,
     defaults: ["audio_utils_defaults"],
 
     arch: {
@@ -77,7 +97,8 @@ cc_library_static {
     name: "libfifo",
     defaults: ["audio_utils_defaults"],
     srcs: [
-        "fifo.c",
+        "fifo.cpp",
+        "fifo_index.cpp",
         "primitives.c",
         "roundup.c",
     ],

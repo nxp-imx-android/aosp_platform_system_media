@@ -153,17 +153,22 @@ static void path_free(struct audio_route *ar)
     unsigned int i;
 
     for (i = 0; i < ar->num_mixer_paths; i++) {
-        if (ar->mixer_path[i].name)
-            free(ar->mixer_path[i].name);
+        free(ar->mixer_path[i].name);
         if (ar->mixer_path[i].setting) {
-            if (ar->mixer_path[i].setting->value.ptr)
-                free(ar->mixer_path[i].setting->value.ptr);
+            size_t j;
+            for (j = 0; j < ar->mixer_path[i].length; j++) {
+                free(ar->mixer_path[i].setting[j].value.ptr);
+            }
             free(ar->mixer_path[i].setting);
+            ar->mixer_path[i].size = 0;
+            ar->mixer_path[i].length = 0;
+            ar->mixer_path[i].setting = NULL;
         }
     }
     free(ar->mixer_path);
     ar->mixer_path = NULL;
     ar->mixer_path_size = 0;
+    ar->num_mixer_paths = 0;
 }
 
 static struct mixer_path *path_get_by_name(struct audio_route *ar,
@@ -379,6 +384,7 @@ static int path_apply(struct audio_route *ar, struct mixer_path *path)
     struct mixer_ctl *ctl;
     enum mixer_ctl_type type;
 
+    ALOGD("Apply path: %s", path->name != NULL ? path->name : "none");
     for (i = 0; i < path->length; i++) {
         ctl_index = path->setting[i].ctl_index;
         ctl = index_to_ctl(ar, ctl_index);
@@ -400,6 +406,7 @@ static int path_reset(struct audio_route *ar, struct mixer_path *path)
     struct mixer_ctl *ctl;
     enum mixer_ctl_type type;
 
+    ALOGV("Reset path: %s", path->name != NULL ? path->name : "none");
     for (i = 0; i < path->length; i++) {
         ctl_index = path->setting[i].ctl_index;
         ctl = index_to_ctl(ar, ctl_index);
@@ -475,10 +482,16 @@ static void start_tag(void *data, const XML_Char *tag_name,
             if (state->level == 1) {
                 /* top level path: create and stash the path */
                 state->path = path_create(ar, (char *)attr_name);
+                if (state->path == NULL)
+                    ALOGE("path created failed, please check the path if existed");
             } else {
                 /* nested path */
                 struct mixer_path *sub_path = path_get_by_name(ar, attr_name);
-                path_add_path(ar, state->path, sub_path);
+                if (!sub_path) {
+                    ALOGE("unable to find sub path '%s'", attr_name);
+                } else if (state->path != NULL) {
+                    path_add_path(ar, state->path, sub_path);
+                }
             }
         }
     }
@@ -551,7 +564,8 @@ static void start_tag(void *data, const XML_Char *tag_name,
                 mixer_value.index = atoi((char *)attr_id);
             else
                 mixer_value.index = -1;
-            path_add_value(ar, state->path, &mixer_value);
+            if (state->path != NULL)
+                path_add_value(ar, state->path, &mixer_value);
         }
     }
 
@@ -878,7 +892,7 @@ struct audio_route *audio_route_init(unsigned int card, const char *xml_path)
     file = fopen(xml_path, "r");
 
     if (!file) {
-        ALOGE("Failed to open %s", xml_path);
+        ALOGE("Failed to open %s: %s", xml_path, strerror(errno));
         goto err_fopen;
     }
 
