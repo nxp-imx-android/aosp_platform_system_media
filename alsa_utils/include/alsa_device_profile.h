@@ -24,7 +24,7 @@
 #define MAX_PROFILE_FORMATS         6  /* We long support the 5 standard formats defined
                                         * in asound.h, so we just need this to be 1 more
                                         * than that */
-#define MAX_PROFILE_SAMPLE_RATES    14 /* this number needs to be 1 more than the number of
+#define MAX_PROFILE_SAMPLE_RATES    15 /* this number needs to be 1 more than the number of
                                         * sample rates in std_sample_rates[]
                                         * (in alsa_device_profile.c) */
 #define MAX_PROFILE_CHANNEL_COUNTS  9  /* this number need to be 1 more than the number of

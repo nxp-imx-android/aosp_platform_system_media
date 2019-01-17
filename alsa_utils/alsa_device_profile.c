@@ -55,8 +55,10 @@ extern int8_t const pcm_format_value_map[50];
 
    TODO: remove 32000, 22050, 12000, 11025?  Each sample rate check
    requires opening the device which may cause pops. */
+
+// Should sorted, proxy_scan_rates() rely on it.
 static const unsigned std_sample_rates[] =
-    {96000, 88200, 192000, 176400, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000};
+    {384000, 192000, 176400, 96000, 88200, 48000, 44100, 32000, 24000, 22050, 16000, 12000, 11025, 8000};
 
 static void profile_reset(alsa_device_profile* profile)
 {
