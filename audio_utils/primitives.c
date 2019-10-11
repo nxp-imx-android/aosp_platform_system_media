@@ -50,6 +50,32 @@ void memcpy_to_u8_from_i16(uint8_t *dst, const int16_t *src, size_t count)
     }
 }
 
+void memcpy_to_u8_from_p24(uint8_t *dst, const uint8_t *src, size_t count)
+{
+    for (; count > 0; --count) {
+#if HAVE_BIG_ENDIAN
+        *dst++ = src[0] + 0x80;
+#else
+        *dst++ = src[2] + 0x80;
+#endif
+        src += 3;
+    }
+}
+
+void memcpy_to_u8_from_i32(uint8_t *dst, const int32_t *src, size_t count)
+{
+    for (; count > 0; --count) {
+        *dst++ = (*src++ >> 24) + 0x80;
+    }
+}
+
+void memcpy_to_u8_from_q8_23(uint8_t *dst, const int32_t *src, size_t count)
+{
+    for (; count > 0; --count) {
+        *dst++ = clamp8_from_q8_23(*src++);
+    }
+}
+
 void memcpy_to_u8_from_float(uint8_t *dst, const float *src, size_t count)
 {
     for (; count > 0; --count) {
@@ -250,6 +276,15 @@ void memcpy_to_float_from_q8_23(float *dst, const int32_t *src, size_t count)
 {
     for (; count > 0; --count) {
         *dst++ = float_from_q8_23(*src++);
+    }
+}
+
+void memcpy_to_i32_from_u8(int32_t *dst, const uint8_t *src, size_t count)
+{
+    dst += count;
+    src += count;
+    for (; count > 0; --count) {
+        *--dst = ((int32_t)(*--src) - 0x80) << 24;
     }
 }
 
