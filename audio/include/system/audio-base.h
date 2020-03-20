@@ -31,11 +31,12 @@ typedef enum {
     AUDIO_STREAM_DTMF = 8,
     AUDIO_STREAM_TTS = 9,
     AUDIO_STREAM_ACCESSIBILITY = 10,
+    AUDIO_STREAM_ASSISTANT = 11,
 #ifndef AUDIO_NO_SYSTEM_DECLARATIONS
     /** For dynamic policy output mixes. Only used by the audio policy */
-    AUDIO_STREAM_REROUTING = 11,
+    AUDIO_STREAM_REROUTING = 12,
     /** For audio flinger tracks volume. Only used by the audioflinger */
-    AUDIO_STREAM_PATCH = 12,
+    AUDIO_STREAM_PATCH = 13,
 #endif // AUDIO_NO_SYSTEM_DECLARATIONS
 } audio_stream_type_t;
 
@@ -64,6 +65,7 @@ typedef enum {
 } audio_source_t;
 
 typedef enum {
+    AUDIO_SESSION_DEVICE = -2,
     AUDIO_SESSION_OUTPUT_STAGE = -1, // (-1)
     AUDIO_SESSION_OUTPUT_MIX = 0,
     AUDIO_SESSION_ALLOCATE = 0,
