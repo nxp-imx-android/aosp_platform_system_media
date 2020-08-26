@@ -1,10 +1,53 @@
 // Build the unit tests for audio_utils
 
-cc_test {
-    name: "fdtostring_tests",
-    host_supported: false,
+cc_binary {
+    name: "biquad_filter",
+    host_supported: true,
+
+    srcs: [
+        "biquad_filter.cpp"
+    ],
 
     shared_libs: [
+        "libaudioutils",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+}
+
+cc_test {
+    name: "biquad_filter_tests",
+    host_supported: true,
+
+    srcs: [
+        "biquad_filter_tests.cpp",
+    ],
+
+    header_libs: [
+        "libaudioutils_headers",
+    ],
+
+    static_libs: [
+        "libgmock",
+    ],
+
+    cflags: [
+        "-Wall",
+        "-Werror",
+        "-Wextra",
+    ],
+}
+
+cc_test {
+    name: "fdtostring_tests",
+    host_supported: true,
+
+    shared_libs: [
+        "libaudioutils",
         "libcutils",
         "liblog",
         "libutils", //for systemTime
@@ -15,11 +58,6 @@ cc_test {
         "-Werror",
         "-Wextra",
     ],
-    target: {
-        android: {
-            shared_libs: ["libaudioutils"],
-        },
-    }
 }
 
 cc_test {
@@ -46,26 +84,6 @@ cc_test {
 }
 
 cc_binary {
-    name: "primitives_benchmark",
-    host_supported: true,
-    target: {
-        darwin: {
-            enabled: false,
-        },
-    },
-
-    srcs: ["primitives_benchmark.cpp"],
-    cflags: [
-        "-Werror",
-        "-Wall",
-    ],
-    static_libs: [
-        "libgoogle-benchmark",
-        "libaudioutils",
-    ],
-}
-
-cc_binary {
     name: "fifo_tests",
     host_supported: true,
     srcs: ["fifo_tests.cpp"],
@@ -79,7 +97,7 @@ cc_binary {
 
 cc_binary {
     name: "fifo_multiprocess",
-    host_supported: false,
+    host_supported: true,
     srcs: ["fifo_multiprocess.cpp"],
     shared_libs: ["libaudioutils", "libcutils"],
     static_libs: ["libsndfile"],
@@ -143,7 +161,7 @@ cc_test {
 
 cc_test {
     name: "errorlog_tests",
-    host_supported: false,
+    host_supported: true,
 
     shared_libs: [
         "libcutils",
@@ -167,7 +185,7 @@ cc_test {
 
 cc_test {
     name: "powerlog_tests",
-    host_supported: false,
+    host_supported: true,
 
     shared_libs: [
         "libcutils",
@@ -191,7 +209,7 @@ cc_test {
 
 cc_test {
     name: "simplelog_tests",
-    host_supported: false,
+    host_supported: true,
 
     shared_libs: [
         "libcutils",
@@ -272,9 +290,9 @@ cc_test {
 
 cc_test {
     name: "statistics_tests",
-    host_supported: false,
+    host_supported: true,
 
-    shared_libs: ["libaudioutils"],
+    header_libs: ["libaudioutils_headers"],
     srcs: ["statistics_tests.cpp"],
     cflags: [
         "-Wall",
@@ -285,9 +303,9 @@ cc_test {
 
 cc_test {
     name: "timestampverifier_tests",
-    host_supported: false,
+    host_supported: true,
 
-    shared_libs: ["libaudioutils"],
+    header_libs: ["libaudioutils_headers"],
     srcs: ["timestampverifier_tests.cpp"],
     cflags: [
         "-Wall",
@@ -298,7 +316,7 @@ cc_test {
 
 cc_test {
     name: "variadic_tests",
-    host_supported: false,
+    host_supported: true,
 
     shared_libs: ["libaudioutils"],
     srcs: ["variadic_tests.cpp"],
@@ -330,21 +348,6 @@ cc_test {
             static_libs: ["libaudioutils"],
         },
     }
-}
-
-cc_binary {
-    name: "statistics_benchmark",
-    host_supported: false,
-
-    srcs: ["statistics_benchmark.cpp"],
-    cflags: [
-        "-Werror",
-        "-Wall",
-    ],
-    static_libs: [
-        "libgoogle-benchmark",
-        "libaudioutils",
-    ],
 }
 
 cc_test {
