@@ -20,7 +20,7 @@ namespace android::audio_utils {
 
 void Balance::setChannelMask(audio_channel_mask_t channelMask)
 {
-    channelMask &= ~ AUDIO_CHANNEL_HAPTIC_ALL;
+    channelMask = static_cast<audio_channel_mask_t>(channelMask & ~AUDIO_CHANNEL_HAPTIC_ALL);
     if (!audio_is_output_channel(channelMask) // invalid mask
             || mChannelMask == channelMask) { // no need to do anything
         return;
@@ -53,7 +53,7 @@ void Balance::setChannelMask(audio_channel_mask_t channelMask)
     // which is a fixed geometrical constant for a given channel mask.
     // This assumes that the channel mask does not change frequently.
     //
-    // For the channel mask spec, see system/media/audio/include/system/audio-base.h.
+    // For the channel mask spec, see system/media/audio/include/system/audio*.h.
     //
     // The side is: 0 = left, 1 = right, 2 = center.
     static constexpr int sideFromChannel[] = {
