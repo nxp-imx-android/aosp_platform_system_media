@@ -2,6 +2,7 @@ cc_library_headers {
     name: "libaudio_system_headers",
     host_supported: true,
     vendor_available: true,
+    product_available: true,
     // TODO(b/153609531): remove when no longer needed.
     native_bridge_supported: true,
 
@@ -18,6 +19,7 @@ cc_library_headers {
             enabled: true,
         },
         vendor: {
+            // product variant does not require this flag
             cflags: ["-DAUDIO_NO_SYSTEM_DECLARATIONS"],
         },
     },
@@ -27,7 +29,7 @@ cc_library_headers {
 filegroup {
     name: "libaudio_system_audio_base",
     srcs: [
-        "include/system/audio-base.h",
+        "include/system/audio-hal-enums.h",
     ],
     path: "include",
 }
