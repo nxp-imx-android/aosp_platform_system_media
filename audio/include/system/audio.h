@@ -132,6 +132,13 @@ static inline audio_attributes_t attributes_initializer(audio_usage_t usage)
     return attributes;
 }
 
+static inline audio_attributes_t attributes_initializer_flags(audio_flags_mask_t flags)
+{
+    audio_attributes_t attributes = AUDIO_ATTRIBUTES_INITIALIZER;
+    attributes.flags = flags;
+    return attributes;
+}
+
 static inline void audio_flags_to_audio_output_flags(
                                            const audio_flags_mask_t audio_flags,
                                            audio_output_flags_t *flags)
@@ -1642,6 +1649,7 @@ static inline bool audio_is_valid_format(audio_format_t format)
         /* not reached */
     case AUDIO_FORMAT_DTS:
     case AUDIO_FORMAT_DTS_HD:
+    case AUDIO_FORMAT_IEC60958:
     case AUDIO_FORMAT_IEC61937:
     case AUDIO_FORMAT_DOLBY_TRUEHD:
     case AUDIO_FORMAT_EVRC:
@@ -1713,6 +1721,17 @@ static inline bool audio_is_valid_format(audio_format_t format)
     case AUDIO_FORMAT_APTX_TWSP:
     case AUDIO_FORMAT_LC3:
         return true;
+    case AUDIO_FORMAT_MPEGH:
+        switch (format) {
+        case AUDIO_FORMAT_MPEGH_BL_L3:
+        case AUDIO_FORMAT_MPEGH_BL_L4:
+        case AUDIO_FORMAT_MPEGH_LC_L3:
+        case AUDIO_FORMAT_MPEGH_LC_L4:
+            return true;
+        default:
+            return false;
+        }
+        /* not reached */
     default:
         return false;
     }
@@ -1721,14 +1740,18 @@ static inline bool audio_is_valid_format(audio_format_t format)
 static inline bool audio_is_iec61937_compatible(audio_format_t format)
 {
     switch (format) {
-    case AUDIO_FORMAT_AC3:       // IEC 61937-3:2017
-    case AUDIO_FORMAT_AC4:       // IEC 61937-14:2017
-    case AUDIO_FORMAT_E_AC3:     // IEC 61937-3:2017
-    case AUDIO_FORMAT_E_AC3_JOC: // IEC 61937-3:2017
-    case AUDIO_FORMAT_MAT:       // IEC 61937-9:2017
-    case AUDIO_FORMAT_MAT_1_0:   // IEC 61937-9:2017
-    case AUDIO_FORMAT_MAT_2_0:   // IEC 61937-9:2017
-    case AUDIO_FORMAT_MAT_2_1:   // IEC 61937-9:2017
+    case AUDIO_FORMAT_AC3:         // IEC 61937-3:2017
+    case AUDIO_FORMAT_AC4:         // IEC 61937-14:2017
+    case AUDIO_FORMAT_E_AC3:       // IEC 61937-3:2017
+    case AUDIO_FORMAT_E_AC3_JOC:   // IEC 61937-3:2017
+    case AUDIO_FORMAT_MAT:         // IEC 61937-9:2017
+    case AUDIO_FORMAT_MAT_1_0:     // IEC 61937-9:2017
+    case AUDIO_FORMAT_MAT_2_0:     // IEC 61937-9:2017
+    case AUDIO_FORMAT_MAT_2_1:     // IEC 61937-9:2017
+    case AUDIO_FORMAT_MPEGH_BL_L3: // IEC 61937-13:2018
+    case AUDIO_FORMAT_MPEGH_BL_L4: // IEC 61937-13:2018
+    case AUDIO_FORMAT_MPEGH_LC_L3: // IEC 61937-13:2018
+    case AUDIO_FORMAT_MPEGH_LC_L4: // IEC 61937-13:2018
         return true;
     default:
         return false;
